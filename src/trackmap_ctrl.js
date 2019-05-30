@@ -33,7 +33,8 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
     this.layers = {
       'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19
+        //maxZoom: 19
+        maxZoom: 14
       }),
       'OpenTopoMap': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
@@ -68,8 +69,8 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
     this.events.on('data-snapshot-load', this.onDataSnapshotLoad.bind(this));
 
     // Global events
-    appEvents.on('graph-hover', this.onPanelHover.bind(this));
-    appEvents.on('graph-hover-clear', this.onPanelClear.bind(this));
+    //appEvents.on('graph-hover', this.onPanelHover.bind(this));
+    //appEvents.on('graph-hover-clear', this.onPanelClear.bind(this));
   }
 
   onInitialized(){
@@ -204,12 +205,13 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
     // Create the map
     this.leafMap = L.map('trackmap-' + this.panel.id, {
       scrollWheelZoom: this.panel.scrollWheelZoom,
+	    zoomControl: false,
       zoomSnap: 0.5,
       zoomDelta: 1,
     });
 
     // Add layers to the control widget
-    L.control.layers(this.layers).addTo(this.leafMap);
+    //L.control.layers(this.layers).addTo(this.leafMap);
 
     // Add default layer to map
     this.layers[this.panel.defaultLayer].addTo(this.leafMap);
@@ -278,6 +280,11 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
       }
     ).addTo(this.leafMap);
 
+    if (this.coords.length > 0) {
+       this.hoverMarker.addTo(this.leafMap);
+       this.hoverMarker.setLatLng(this.coords[this.coords.length-1].position);
+       this.hoverTarget = 42;
+    }
     this.zoomToFit();
   }
 
